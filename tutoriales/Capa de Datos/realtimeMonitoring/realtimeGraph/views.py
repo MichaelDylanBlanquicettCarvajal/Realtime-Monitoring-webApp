@@ -17,6 +17,7 @@ from django.http import JsonResponse
 from django.http.response import FileResponse, Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views import View
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from random import randint
@@ -673,3 +674,46 @@ Filtro para formatear datos en los templates
 @ register.filter
 def add_str(str1, str2):
     return str1 + str2
+
+class DataStreamView(View):
+    def get(self, request, *args, **kwargs):
+        limit = int(request.GET.get('limit', 1000))
+        # Trae los últimos N datos ordenados por fecha
+        data_qs = Data.objects.order_by('-time')[:limit]
+        data = [
+            {
+                'id': d.id,
+                'value': d.value,
+                'time': d.time,
+                'station': d.station_id,
+                'measurement': d.measurement_id,
+            }
+            for d in data_qs
+        ]
+        return JsonResponse(data, safe=False)
+
+
+class DataBatchView(View):
+    def get(self, request, *args, **kwargs):
+        from_ts = request.GET.get('from')
+        to_ts = request.GET.get('to')
+        limit = int(request.GET.get('limit', 100000))
+        data_qs = Data.objects.all()
+        if from_ts:
+            from_dt = datetime.fromtimestamp(float(from_ts)/1000)
+            data_qs = data_qs.filter(time__gte=from_dt)
+        if to_ts:
+            to_dt = datetime.fromtimestamp(float(to_ts)/1000)
+            data_qs = data_qs.filter(time__lte=to_dt)
+        data_qs = data_qs.order_by('time')[:limit]
+        data = [
+            {
+                'id': d.id,
+                'value': d.value,
+                'time': d.time,
+                'station': d.station_id,
+                'measurement': d.measurement_id,
+            }
+            for d in data_qs
+        ]
+        return JsonResponse(data, safe=False)

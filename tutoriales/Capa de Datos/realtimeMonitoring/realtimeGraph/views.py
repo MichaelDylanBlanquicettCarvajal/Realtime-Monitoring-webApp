@@ -17,7 +17,10 @@ from django.http import JsonResponse
 from django.http.response import FileResponse, Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+<<<<<<< HEAD
 from django.views import View
+=======
+>>>>>>> afb08df (UnZip)
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from random import randint
@@ -674,6 +677,7 @@ Filtro para formatear datos en los templates
 @ register.filter
 def add_str(str1, str2):
     return str1 + str2
+<<<<<<< HEAD
 
 class DataStreamView(View):
     def get(self, request, *args, **kwargs):
@@ -717,3 +721,5 @@ class DataBatchView(View):
             for d in data_qs
         ]
         return JsonResponse(data, safe=False)
+=======
+>>>>>>> afb08df (UnZip)

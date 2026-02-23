@@ -308,6 +308,7 @@
             "Fn::GetAtt": ["timescaledbsg628CD439", "GroupId"]
           }
         ],
+        "KeyName": "keyNueva",
         "SubnetId": {
           "Ref": "VPCpublicSubnet1Subnet325F50B2"
         },
@@ -363,6 +364,7 @@
             "Fn::GetAtt": ["postgressg6AB3C2C5", "GroupId"]
           }
         ],
+        "KeyName": "keyNueva",
         "SubnetId": {
           "Ref": "VPCpublicSubnet1Subnet325F50B2"
         },

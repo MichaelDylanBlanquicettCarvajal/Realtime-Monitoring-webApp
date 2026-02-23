@@ -396,12 +396,12 @@
   "Mappings": {
     "TimescaleInstanceAmiMapF4FD7A9B": {
       "us-east-1": {
-        "ami": "ami-04680790a315cd58d"
+        "ami": "ami-04505e74c0741db8d"
       }
     },
     "PostgresInstanceAmiMap67E48A82": {
       "us-east-1": {
-        "ami": "ami-04680790a315cd58d"
+        "ami": "ami-04505e74c0741db8d"
       }
     }
   },

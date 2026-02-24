@@ -770,3 +770,32 @@ Filtro para formatear datos en los templates
 @register.filter
 def add_str(str1, str2):
     return str1 + str2
+
+# Stream: retorna el último dato registrado
+@csrf_exempt
+def get_last_data(request):
+    if request.method == 'GET':
+        try:
+            last_data = Data.objects.order_by('-time').first()
+            if last_data:
+                return JsonResponse(last_data.toDict(), safe=False)
+            else:
+                return JsonResponse({'error': 'No data found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+# Batch: retorna todos los datos en un rango de tiempo
+@csrf_exempt
+def get_batch_data(request):
+    if request.method == 'GET':
+        start = request.GET.get('start')
+        end = request.GET.get('end')
+        limit = int(request.GET.get('limit', 100000))
+        try:
+            if start and end:
+                batch = Data.objects.filter(time__gte=int(start), time__lte=int(end))[:limit]
+            else:
+                batch = Data.objects.all()[:limit]
+            return JsonResponse([d.toDict() for d in batch], safe=False)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)

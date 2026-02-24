@@ -673,3 +673,27 @@ Filtro para formatear datos en los templates
 @ register.filter
 def add_str(str1, str2):
     return str1 + str2
+
+# Batch: retorna todos los datos en un rango de tiempo
+def get_batch_data(request):
+    if request.method == 'GET':
+        start = request.GET.get('start')
+        end = request.GET.get('end')
+        limit = int(request.GET.get('limit', 100000))
+        try:
+            if start and end:
+                batch = Data.objects.filter(time__gte=start, time__lte=end)[:limit]
+            else:
+                batch = Data.objects.all()[:limit]
+            return JsonResponse([d.toDict() for d in batch], safe=False)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+# Streaming: retorna la última medición de cada variable en tiempo real
+def get_last_data(request):
+	if request.method == 'GET':
+		try:
+			last_data = Data.objects.latest('time')
+			return JsonResponse(last_data.toDict(), safe=False)
+		except Exception as e:
+			return JsonResponse({'error': str(e)}, status=500)
